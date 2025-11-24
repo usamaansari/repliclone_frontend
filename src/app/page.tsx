@@ -37,7 +37,8 @@ export default function Home() {
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center space-y-8">
             {/* Hero Image - Clickable to start conversation - Floating at top */}
-            <div className="flex justify-center mb-8 animate-float">
+            <div className="flex justify-center mb-8 animate-float flex-col items-center">
+              <h3 className="text-2xl font-bold mb-4 text-primary font-bold text-center text-shadow-lg drop-shadow-lg shadow-primary/20 px-4 py-2 bg-primary/10 rounded-full">AI Clone - Car Sales Agent</h3>
               <Link href="/dashboard" className="group relative">
                 <div className="relative w-full min-w-[400px] max-w-[25vw] sm:min-w-[500px] sm:max-w-[30vw] md:max-w-[25vw] lg:min-w-[600px] lg:max-w-[500px] mx-auto rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-primary/20 cursor-pointer">
                   <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-primary/5">
