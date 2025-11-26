@@ -39,13 +39,13 @@ export default function ServicesPage() {
               Markets We Serve
             </Badge>
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
-              AI Avatars for
+              AI Clones for
               <span className="block bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                 Every Industry
               </span>
             </h1>
             <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              From small businesses to enterprise solutions, our AI video avatars transform
+              From small businesses to enterprise solutions, our AI video clones transform
               how you engage customers across every market vertical.
             </p>
           </div>
@@ -63,7 +63,7 @@ export default function ServicesPage() {
               Powering SMB Growth
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Help small and medium businesses scale their sales operations with AI-powered video avatars
+              Help small and medium businesses scale their sales operations with AI-powered video clones
             </p>
           </div>
 
@@ -242,7 +242,7 @@ export default function ServicesPage() {
               Empower Your Solo Business
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Scale your personal brand and automate sales with AI avatars that work around the clock
+              Scale your personal brand and automate sales with AI clones that work around the clock
             </p>
           </div>
 
@@ -381,7 +381,7 @@ export default function ServicesPage() {
               Enterprise-Grade AI Sales
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Advanced AI avatars for large-scale operations with enterprise integrations and support
+              Advanced AI clones for large-scale operations with enterprise integrations and support
             </p>
           </div>
 
@@ -518,7 +518,7 @@ export default function ServicesPage() {
               One Platform, Infinite Markets
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Our AI avatars adapt to your industry, your brand, and your customers
+              Our AI clones adapt to your industry, your brand, and your customers
             </p>
           </div>
 
@@ -542,7 +542,7 @@ export default function ServicesPage() {
                 </div>
                 <CardTitle>Video-First</CardTitle>
                 <CardDescription>
-                  Engaging video avatars that build trust and drive conversions
+                  Engaging video clones that build trust and drive conversions
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -572,7 +572,7 @@ export default function ServicesPage() {
                 Ready to Transform Your Market?
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Join businesses across all industries using AI avatars to scale their sales
+                Join businesses across all industries using AI clones to scale their sales
                 and engage customers like never before.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

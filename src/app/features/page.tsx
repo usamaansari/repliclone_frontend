@@ -46,16 +46,16 @@ export default function FeaturesPage() {
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center space-y-8">
             <Badge variant="secondary" className="mb-4">
-              Avatar Capabilities
+              Clone Capabilities
             </Badge>
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
               Powerful Features for
               <span className="block bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                AI Sales Avatars
+                AI Sales Clones
               </span>
             </h1>
             <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Discover the comprehensive capabilities that make our AI avatars the most
+              Discover the comprehensive capabilities that make our AI clones the most
               advanced virtual sales representatives in the market.
             </p>
           </div>
@@ -671,7 +671,7 @@ export default function FeaturesPage() {
                 Ready to Experience These Features?
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Start your free trial today and see how AI avatars can transform your sales operations.
+                Start your free trial today and see how AI clones can transform your sales operations.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" className="text-lg px-8 py-6">

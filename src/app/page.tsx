@@ -225,9 +225,9 @@ export default function Home() {
                   1
                 </div>
               </div>
-              <h3 className="text-2xl font-semibold">Create Your Avatar</h3>
+              <h3 className="text-2xl font-semibold">Create Your Clone</h3>
               <p className="text-muted-foreground">
-                Use our no-code builder to design your AI avatar's appearance,
+                Use our no-code builder to design your AI clone's appearance,
                 personality, and voice characteristics.
               </p>
             </div>
@@ -255,7 +255,7 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-semibold">Launch & Scale</h3>
               <p className="text-muted-foreground">
-                Deploy your avatar and watch it engage customers, handle sales,
+                Deploy your clone and watch it engage customers, handle sales,
                 and scale infinitely across channels.
               </p>
             </div>
@@ -285,7 +285,7 @@ export default function Home() {
                     <h3 className="font-semibold text-lg mb-1">Accessible to All</h3>
                     <p className="text-muted-foreground">
                       No technical expertise required. Our no-code interface makes
-                      it easy for anyone to create professional AI sales avatars.
+                      it easy for anyone to create professional AI sales clones.
                     </p>
                   </div>
                 </div>
@@ -321,7 +321,7 @@ export default function Home() {
                   <Zap className="h-24 w-24 text-primary mx-auto" />
                   <h3 className="text-2xl font-bold">24/7 Availability</h3>
                   <p className="text-muted-foreground">
-                    Your AI sales representative never sleeps, ensuring every
+                    Your AI sales clone never sleeps, ensuring every
                     customer interaction is handled promptly.
                   </p>
                 </div>
@@ -341,7 +341,7 @@ export default function Home() {
                 Ready to Transform Your Sales?
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Join thousands of businesses using AI avatars to scale their sales
+                Join thousands of businesses using AI clones to scale their sales
                 operations and increase revenue.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
