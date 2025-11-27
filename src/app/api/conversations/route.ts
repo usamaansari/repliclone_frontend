@@ -12,7 +12,7 @@ export async function POST() {
         replica_id: process.env.NEXT_REPLICA_ID || "rfe12d8b9597",
         persona_id: process.env.NEXT_PERSONA_ID || "pdced222244b",
         properties: {
-          max_call_duration: 60,
+          max_call_duration: 45,
           participant_left_timeout: 30,
           participant_absent_timeout: 30,
         },
