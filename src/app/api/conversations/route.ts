@@ -1,7 +1,17 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyAuth } from '@/utils/auth-server';
+import { formatError } from '@/utils/helpers';
 
-export async function POST() {
+export async function POST(req: NextRequest) {
   try {
+    // Verify authentication
+    const user = await verifyAuth(req);
+    if (!user) {
+      return NextResponse.json(
+        formatError('Authentication required', 'UNAUTHORIZED'),
+        { status: 401 }
+      );
+    }
     const response = await fetch("https://tavusapi.com/v2/conversations", {
       method: "POST",
       headers: {
