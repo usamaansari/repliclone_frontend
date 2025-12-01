@@ -1,12 +1,40 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
+import { Sparkles, LogOut } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { isAuthenticated, removeAuthToken } from "@/utils/auth";
+import axios from "axios";
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [authenticated, setAuthenticated] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  useEffect(() => {
+    setAuthenticated(isAuthenticated());
+  }, [pathname]);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await axios.post("/api/auth/logout");
+      removeAuthToken();
+      setAuthenticated(false);
+      router.push("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Still remove token and redirect even if API call fails
+      removeAuthToken();
+      setAuthenticated(false);
+      router.push("/");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -40,9 +68,32 @@ export default function Header() {
                 </Button>
               );
             })}
-            <Button size="sm" asChild>
-              <Link href="/get-started">Get Started</Link>
-            </Button>
+            {authenticated ? (
+              <>
+                <Button size="sm" variant="outline" asChild>
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  {isLoggingOut ? "Logging out..." : "Logout"}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button size="sm" variant="ghost" asChild>
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link href="/register">Get Started</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

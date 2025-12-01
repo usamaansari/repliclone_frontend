@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Conversation } from '@/components/cvi/components/conversation';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import Sidebar from '@/components/dashboard/Sidebar';
+import { getAuthHeader } from '@/utils/auth';
 
 const Dashboard = () => {
   const [conversationUrl, setConversationUrl] = useState<string | null>(null);
@@ -15,6 +18,10 @@ const Dashboard = () => {
     try {
       const response = await fetch("/api/conversations", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...getAuthHeader(),
+        },
       });
 
       if (!response.ok) {
@@ -40,55 +47,46 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100vw",
-        height: "100vh",
-        backgroundColor: "#1e1e1e",
-        color: "#fff",
-        textAlign: "center",
-        flexDirection: "column",
-        margin: 0,
-        padding: 0,
-      }}
-    >
-      <h1 style={{ marginBottom: "1rem" }}>Tavus CVI Integration</h1>
-      {!conversationUrl ? (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-          <button
-            onClick={createConversation}
-            disabled={isLoading}
-            style={{
-              padding: "0.75rem 1.5rem",
-              fontSize: "1rem",
-              background: "#6a0dad",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: isLoading ? "not-allowed" : "pointer",
-              opacity: isLoading ? 0.6 : 1,
-            }}
-          >
-            {isLoading ? "Creating Conversation..." : "Start Conversation"}
-          </button>
-          {error && (
-            <p style={{ color: "#ff6b6b", marginTop: "0.5rem" }}>
-              {error}
-            </p>
-          )}
+    <ProtectedRoute>
+      <div className="flex h-screen w-full bg-background">
+        {/* Sidebar */}
+        <Sidebar />
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex items-center justify-center p-8">
+            <div className="w-full max-w-6xl h-full flex flex-col items-center justify-center">
+              <h1 className="text-3xl font-bold mb-8 text-foreground">
+                ReplicloneAI - Car Sales Agent Integration
+              </h1>
+              {!conversationUrl ? (
+                <div className="flex flex-col items-center gap-4">
+                  <button
+                    onClick={createConversation}
+                    disabled={isLoading}
+                    className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {isLoading ? "Creating Conversation..." : "Start Conversation"}
+                  </button>
+                  {error && (
+                    <p className="text-destructive text-sm mt-2">
+                      {error}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="w-full h-full max-h-[800px]">
+                  <Conversation
+                    conversationUrl={conversationUrl}
+                    onLeave={() => setConversationUrl(null)}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      ) : (
-        <div style={{ width: "100%", maxWidth: "800px", height: "100%" }}>
-          <Conversation
-            conversationUrl={conversationUrl}
-            onLeave={() => setConversationUrl(null)}
-          />
-        </div>
-      )}
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 };
 
