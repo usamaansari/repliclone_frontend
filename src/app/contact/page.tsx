@@ -54,7 +54,7 @@ export default function ContactPage() {
                   href="mailto:steven@replicloneai.com" 
                   className="text-lg font-semibold text-primary hover:underline transition-colors"
                 >
-                  steven@repliclone.ai
+                  steven@replicloneai.com
                 </a>
                 <p className="text-sm text-muted-foreground mt-2">
                   We'll respond within 24 hours
