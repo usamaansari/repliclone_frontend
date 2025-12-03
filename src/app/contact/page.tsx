@@ -51,10 +51,10 @@ export default function ContactPage() {
               </CardHeader>
               <CardContent>
                 <a 
-                  href="mailto:contact@replicloneai.com" 
+                  href="mailto:steven@replicloneai.com" 
                   className="text-lg font-semibold text-primary hover:underline transition-colors"
                 >
-                  info@replicloneai.com
+                  steven@repliclone.ai
                 </a>
                 <p className="text-sm text-muted-foreground mt-2">
                   We'll respond within 24 hours
@@ -75,10 +75,10 @@ export default function ContactPage() {
               </CardHeader>
               <CardContent>
                 <a 
-                  href="tel:+1-555-REPLICLONE" 
+                  href="tel:+1-604-512-1238" 
                   className="text-lg font-semibold text-primary hover:underline transition-colors"
                 >
-                  +1 (778) 555-5555
+                  +1 (604) 512-1238
                 </a>
                 <p className="text-sm text-muted-foreground mt-2">
                   Mon-Fri 9am-6pm PST
