@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Conversation } from '@/components/cvi/components/conversation';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import Sidebar from '@/components/dashboard/Sidebar';
-import { getAuthHeader } from '@/utils/auth';
+import { authenticatedFetch } from '@/utils/api-client';
 
 const Dashboard = () => {
   const [conversationUrl, setConversationUrl] = useState<string | null>(null);
@@ -16,11 +16,10 @@ const Dashboard = () => {
     setError(null);
     
     try {
-      const response = await fetch("/api/conversations", {
+      const response = await authenticatedFetch("/api/conversations", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...getAuthHeader(),
         },
       });
 
@@ -32,6 +31,12 @@ const Dashboard = () => {
       const data = await response.json();
       setConversationUrl(data.conversation_url);
     } catch (err) {
+      // If it's a token expiration error, handleTokenExpiration already redirected
+      // Otherwise, show the error message
+      if (err instanceof Error && err.message.includes("Authentication expired")) {
+        // User is being redirected, don't set error state
+        return;
+      }
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
