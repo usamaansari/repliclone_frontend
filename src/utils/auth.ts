@@ -43,3 +43,21 @@ export const getAuthHeader = (): { Authorization: string } | {} => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+/**
+ * Handle token expiration by logging out and redirecting to login
+ */
+export const handleTokenExpiration = async (): Promise<void> => {
+  if (typeof window === "undefined") return;
+
+  try {
+    // Call logout API to clear server-side cookies
+    await fetch("/api/auth/logout", { method: "POST" });
+  } catch (error) {
+    console.error("Error during logout:", error);
+  } finally {
+    // Always remove token from localStorage and redirect
+    removeAuthToken();
+    window.location.href = "/login";
+  }
+};
+
