@@ -13,7 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  X
+  X,
+  Users
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { removeAuthToken } from "@/utils/auth";
@@ -58,6 +59,11 @@ export default function Sidebar({ onLogout }: SidebarProps) {
       href: "/dashboard",
       label: "Dashboard",
       icon: LayoutDashboard,
+    },
+    {
+      href: "/dashboard/clones",
+      label: "Clones",
+      icon: Users,
     },
     {
       href: "/dashboard/conversations",
