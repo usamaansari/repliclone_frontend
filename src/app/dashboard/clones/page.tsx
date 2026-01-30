@@ -118,7 +118,7 @@ export default function ClonesPage() {
                   Create and manage your AI clones
                 </p>
               </div>
-              <Link href="/dashboard/clones/create">
+              <Link href="/dashboard/clones/clone-2">
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
                   Create New Clone
@@ -172,7 +172,7 @@ export default function ClonesPage() {
                     ? 'Try adjusting your filters'
                     : 'Get started by creating your first AI clone'}
                 </p>
-                <Link href="/dashboard/clones/create">
+                <Link href="/dashboard/clones/clone-2">
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
                     Create Your First Clone
