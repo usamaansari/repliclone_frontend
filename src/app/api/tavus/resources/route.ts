@@ -53,7 +53,17 @@ export async function GET(req: NextRequest) {
     try {
       if (resourceType === 'all' || resourceType === 'replicas') {
         try {
-          results.replicas = await tavusApi.listReplicas();
+          const verbose = searchParams.get('verbose') === 'true';
+          const replicaType = searchParams.get('replica_type') as 'user' | 'system' | undefined;
+          const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
+          const page = searchParams.get('page') ? parseInt(searchParams.get('page')!) : undefined;
+          
+          results.replicas = await tavusApi.listReplicas({
+            verbose,
+            replica_type: replicaType,
+            limit,
+            page,
+          });
         } catch (error) {
           console.error('Error fetching replicas:', error);
           // Continue with empty array

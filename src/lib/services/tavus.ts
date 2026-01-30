@@ -94,13 +94,33 @@ export interface ConversationResponse {
 
 // Persona APIs
 export interface CreatePersonaPayload {
-  name: string;
+  name?: string; // Legacy support
+  persona_name?: string; // Full pipeline uses persona_name
   system_prompt?: string;
   pipeline_mode?: 'full' | 'echo';
-  replica_id?: string; // Default replica
+  replica_id?: string; // Legacy support
+  default_replica_id?: string; // Full pipeline uses default_replica_id
   document_ids?: string[];
   document_tags?: string[];
   conversational_context?: Record<string, any>;
+  context?: string; // Full pipeline context
+  layers?: {
+    perception?: {
+      perception_model?: string; // e.g., "raven-0"
+    };
+    stt?: {
+      smart_turn_detection?: boolean;
+    };
+    llm?: {
+      model?: string;
+      temperature?: number;
+      max_tokens?: number;
+    };
+    tts?: {
+      voice_id?: string;
+      speed?: number;
+    };
+  };
 }
 
 export interface Persona {
@@ -221,6 +241,16 @@ export interface TavusResource {
   tags?: string[];
 }
 
+export interface TavusReplica {
+  replica_id: string;
+  replica_name: string;
+  thumbnail_video_url?: string;
+  training_progress?: string;
+  status: 'started' | 'completed' | 'error';
+  created_at?: string;
+  replica_type?: 'user' | 'system';
+}
+
 export interface TavusVoice {
   voice_id: string;
   name: string;
@@ -247,7 +277,7 @@ class TavusApiService {
 
   constructor() {
     this.apiKey = (process.env.NEXT_TAVUS_API_KEY || '').trim();
-    this.baseUrl = process.env.NEXT_TAVUS_API_BASE_URL || 'https://api.tavus.io/v2';
+    this.baseUrl = process.env.NEXT_TAVUS_API_BASE_URL || 'https://tavusapi.com/v2';
     
     if (!this.apiKey) {
       console.warn('NEXT_TAVUS_API_KEY is not configured - Tavus integration will be disabled');
@@ -717,15 +747,32 @@ class TavusApiService {
    * List all replicas/templates
    * GET /replicas or /templates
    */
-  async listReplicas(): Promise<TavusResource[]> {
+  async listReplicas(params?: {
+    limit?: number;
+    page?: number;
+    verbose?: boolean;
+    replica_type?: 'user' | 'system';
+    replica_ids?: string[];
+  }): Promise<TavusReplica[]> {
     if (!this.apiKey) {
       throw new Error('Tavus API key is not configured');
     }
 
     try {
-      // Try both endpoints - Tavus may use either
-      let response = await this.fetchWithTimeout(
-        `${this.baseUrl}/replicas`,
+      // Build query parameters
+      const queryParams = new URLSearchParams();
+      if (params?.limit) queryParams.append('limit', params.limit.toString());
+      if (params?.page) queryParams.append('page', params.page.toString());
+      if (params?.verbose) queryParams.append('verbose', 'true');
+      if (params?.replica_type) queryParams.append('replica_type', params.replica_type);
+      if (params?.replica_ids && params.replica_ids.length > 0) {
+        queryParams.append('replica_ids', params.replica_ids.join(','));
+      }
+
+      const url = `${this.baseUrl}/replicas${queryParams.toString() ? `?${queryParams}` : ''}`;
+      
+      const response = await this.fetchWithTimeout(
+        url,
         {
           method: 'GET',
           headers: this.getHeaders(),
@@ -733,34 +780,24 @@ class TavusApiService {
         30000 // 30 second timeout
       );
 
-      if (response.status === 404) {
-        // Try templates endpoint
-        response = await this.fetchWithTimeout(
-          `${this.baseUrl}/templates`,
-          {
-            method: 'GET',
-            headers: this.getHeaders(),
-          },
-          30000 // 30 second timeout
-        );
-      }
-
       if (!response.ok) {
         const errorData = await response.text();
         throw new Error(`Tavus API error: ${response.status} - ${errorData}`);
       }
 
       const data = await response.json();
-      const resources = Array.isArray(data) ? data : (data.replicas || data.templates || []);
       
-      return resources.map((item: any) => ({
-        id: item.replica_id || item.id || item.template_id,
-        name: item.name || item.title,
-        description: item.description,
-        thumbnail_url: item.thumbnail_url || item.preview_url,
-        preview_url: item.preview_url || item.video_url,
-        category: item.category,
-        tags: item.tags,
+      // Handle the new API response format with data array
+      const replicas = data.data || [];
+      
+      return replicas.map((item: any) => ({
+        replica_id: item.replica_id,
+        replica_name: item.replica_name || item.name,
+        thumbnail_video_url: item.thumbnail_video_url,
+        training_progress: item.training_progress,
+        status: item.status,
+        created_at: item.created_at,
+        replica_type: item.replica_type,
       }));
     } catch (error) {
       console.error('Error listing replicas:', error);
@@ -886,10 +923,23 @@ class TavusApiService {
     }
 
     try {
+      // Normalize payload for API - support both legacy and full pipeline formats
+      const apiPayload: any = {
+        ...(payload.persona_name || payload.name ? { persona_name: payload.persona_name || payload.name } : {}),
+        ...(payload.system_prompt ? { system_prompt: payload.system_prompt } : {}),
+        ...(payload.pipeline_mode ? { pipeline_mode: payload.pipeline_mode } : {}),
+        ...(payload.default_replica_id || payload.replica_id ? { default_replica_id: payload.default_replica_id || payload.replica_id } : {}),
+        ...(payload.context ? { context: payload.context } : {}),
+        ...(payload.document_ids ? { document_ids: payload.document_ids } : {}),
+        ...(payload.document_tags ? { document_tags: payload.document_tags } : {}),
+        ...(payload.conversational_context ? { conversational_context: payload.conversational_context } : {}),
+        ...(payload.layers ? { layers: payload.layers } : {}),
+      };
+
       const response = await fetch(`${this.baseUrl}/personas`, {
         method: 'POST',
         headers: this.getHeaders(),
-        body: JSON.stringify(payload),
+        body: JSON.stringify(apiPayload),
       });
 
       if (!response.ok) {
@@ -901,10 +951,10 @@ class TavusApiService {
       
       return {
         persona_id: data.persona_id || data.id,
-        name: data.name,
+        name: data.name || data.persona_name,
         system_prompt: data.system_prompt,
         pipeline_mode: data.pipeline_mode,
-        replica_id: data.replica_id,
+        replica_id: data.replica_id || data.default_replica_id,
         document_ids: data.document_ids,
         created_at: data.created_at,
         updated_at: data.updated_at,
