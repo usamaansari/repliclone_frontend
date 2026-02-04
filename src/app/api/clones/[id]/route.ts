@@ -102,6 +102,7 @@ export async function PATCH(
     if (body.isActive !== undefined) updateData.isActive = body.isActive;
     if (body.personalityTraits) updateData.personalityTraits = body.personalityTraits;
     if (body.trainingData) updateData.trainingData = body.trainingData;
+    if (body.conversationURL !== undefined) updateData.conversationURL = body.conversationURL;
 
     const [updatedClone] = await db
       .update(clones)

@@ -3,7 +3,8 @@ import { verifyAuth } from '@/utils/auth-server';
 import { formatError } from '@/utils/helpers';
 import { tavusApi } from '@/lib/services/tavus';
 import { db } from '@/lib/db';
-import { conversations } from '@/lib/db/schema';
+import { conversations, clones } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 export async function POST(req: NextRequest) {
   try {
@@ -59,6 +60,15 @@ export async function POST(req: NextRequest) {
           },
           startedAt: new Date(),
         });
+
+        // Update clone with conversationURL
+        await db
+          .update(clones)
+          .set({
+            conversationURL: conversation.conversation_url,
+            updatedAt: new Date(),
+          })
+          .where(eq(clones.id, body.clone_id));
       } catch (dbError) {
         console.error('Error saving conversation to database:', dbError);
         // Continue even if database save fails - conversation is already created

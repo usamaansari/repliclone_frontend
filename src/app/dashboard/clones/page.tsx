@@ -21,7 +21,8 @@ import {
   TrendingUp,
   MessageSquare,
   Users,
-  Activity
+  Activity,
+  ExternalLink
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -256,6 +257,19 @@ export default function ClonesPage() {
                                 <span>Replica ID: {clone.tavusReplicaId.substring(0, 8)}...</span>
                               )}
                             </div>
+                            {clone.conversationURL && (
+                              <div className="mt-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => window.open(clone.conversationURL, '_blank')}
+                                  className="text-xs"
+                                >
+                                  <ExternalLink className="h-3 w-3 mr-1" />
+                                  Join Conversation
+                                </Button>
+                              </div>
+                            )}
                           </div>
                           <div className="flex items-center gap-2">
                             <Link href={`/dashboard/clones/${clone.id}`}>
