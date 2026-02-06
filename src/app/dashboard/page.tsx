@@ -10,8 +10,50 @@ const Dashboard = () => {
   const [conversationUrl, setConversationUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [personaId, setPersonaId] = useState<string | null>(null);
+  const [loadingPersona, setLoadingPersona] = useState(true);
+
+  // Fetch user's clones to get persona_id
+  useEffect(() => {
+    const fetchPersonaId = async () => {
+      try {
+        setLoadingPersona(true);
+        const response = await authenticatedFetch("/api/clones");
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch clones");
+        }
+
+        const data = await response.json();
+        const clones = data.data || [];
+        
+        // Find first clone with a persona_id (full pipeline clone)
+        const cloneWithPersona = clones.find((clone: any) => clone.tavusPersonaId);
+        
+        if (cloneWithPersona) {
+          setPersonaId(cloneWithPersona.tavusPersonaId);
+        } else {
+          setError("No personas found. Please create a clone with full pipeline first.");
+        }
+      } catch (err) {
+        console.error("Error fetching clones:", err);
+        if (err instanceof Error && !err.message.includes("Authentication expired")) {
+          setError("Failed to load your clones. Please try again.");
+        }
+      } finally {
+        setLoadingPersona(false);
+      }
+    };
+
+    fetchPersonaId();
+  }, []);
 
   const createConversation = async () => {
+    if (!personaId) {
+      setError("No persona available. Please create a clone with full pipeline first.");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     
@@ -21,6 +63,10 @@ const Dashboard = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          persona_id: personaId,
+          conversation_name: "Dashboard Conversation",
+        }),
       });
 
       if (!response.ok) {
@@ -28,8 +74,8 @@ const Dashboard = () => {
         throw new Error(errorData.error || "Failed to create conversation");
       }
 
-      const data = await response.json();
-      setConversationUrl(data.conversation_url);
+      const result = await response.json();
+      setConversationUrl(result.data?.conversation_url || result.conversation_url);
     } catch (err) {
       // If it's a token expiration error, handleTokenExpiration already redirected
       // Otherwise, show the error message
@@ -43,13 +89,13 @@ const Dashboard = () => {
     }
   };
 
-  // Auto-start conversation when component mounts
+  // Auto-start conversation when persona is loaded
   useEffect(() => {
-    if (!conversationUrl && !isLoading) {
+    if (!loadingPersona && personaId && !conversationUrl && !isLoading) {
       createConversation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loadingPersona, personaId]);
 
   return (
     <ProtectedRoute>
@@ -66,17 +112,33 @@ const Dashboard = () => {
               </h1>
               {!conversationUrl ? (
                 <div className="flex flex-col items-center gap-4">
-                  <button
-                    onClick={createConversation}
-                    disabled={isLoading}
-                    className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {isLoading ? "Creating Conversation..." : "Start Conversation"}
-                  </button>
-                  {error && (
-                    <p className="text-destructive text-sm mt-2">
-                      {error}
-                    </p>
+                  {loadingPersona ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                      <p className="text-muted-foreground text-sm">Loading your clones...</p>
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        onClick={createConversation}
+                        disabled={isLoading || !personaId}
+                        className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        {isLoading ? "Creating Conversation..." : "Start Conversation"}
+                      </button>
+                      {error && (
+                        <div className="max-w-md text-center">
+                          <p className="text-destructive text-sm mt-2">
+                            {error}
+                          </p>
+                          {!personaId && (
+                            <p className="text-muted-foreground text-xs mt-2">
+                              Visit the Clones page to create your first persona with full pipeline.
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               ) : (

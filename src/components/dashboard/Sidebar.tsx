@@ -65,6 +65,7 @@ export default function Sidebar({ onLogout }: SidebarProps) {
       label: "Clones",
       icon: Users,
     },
+    /*
     {
       href: "/dashboard/conversations",
       label: "Conversations",
@@ -85,6 +86,7 @@ export default function Sidebar({ onLogout }: SidebarProps) {
       label: "Settings",
       icon: Settings,
     },
+    */
   ];
 
   const handleLogout = async () => {
