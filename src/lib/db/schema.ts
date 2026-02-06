@@ -62,6 +62,7 @@ export const clones = pgTable('clones', {
   voiceId: varchar('voice_id', { length: 255 }),
   personalityTraits: jsonb('personality_traits'),
   trainingData: jsonb('training_data'),
+  conversationURL: text('conversation_url'),
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),

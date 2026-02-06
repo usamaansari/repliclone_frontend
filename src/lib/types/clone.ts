@@ -96,6 +96,7 @@ export interface Clone {
   voiceId?: string;
   personalityTraits?: Record<string, any>;
   trainingData?: Record<string, any>;
+  conversationURL?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
