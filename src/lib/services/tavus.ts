@@ -28,8 +28,17 @@ export interface CreateReplicaResponse {
 
 export interface ReplicaStatus {
   replica_id: string;
-  status: 'pending' | 'processing' | 'active' | 'failed';
-  progress?: number;
+  status:
+    | 'pending'
+    | 'processing'
+    | 'active'
+    | 'failed'
+    | 'started'
+    | 'completed'
+    | 'error';
+  // Tavus returns training_progress like "100/100" (string).
+  // Some endpoints may also return a numeric progress field.
+  progress?: number | string;
   error?: string;
   video_url?: string;
   created_at?: string;
@@ -47,6 +56,23 @@ export interface UpdateReplicaPayload {
     response_style?: string;
     training_data?: any;
   };
+}
+
+// Personal human replica training (Quickstart: POST /v2/replicas)
+export interface CreateHumanReplicaPayload {
+  callback_url: string;
+  replica_name: string;
+  train_video_url: string;
+  consent_video_url: string;
+  model_name?: string; // e.g. "phoenix-4" (default)
+}
+
+export interface CreateHumanReplicaResponse {
+  replica_id: string;
+  status: string;
+  processing_time_estimate?: number;
+  message?: string;
+  training_progress?: string;
 }
 
 // Conversation APIs
@@ -357,6 +383,46 @@ class TavusApiService {
   }
 
   /**
+   * Create a personal human replica (training) using the quickstart payload.
+   * POST /replicas
+   */
+  async createHumanReplica(payload: CreateHumanReplicaPayload): Promise<CreateHumanReplicaResponse> {
+    if (!this.apiKey) {
+      throw new Error('Tavus API key is not configured. Please set NEXT_TAVUS_API_KEY environment variable.');
+    }
+
+    try {
+      const response = await this.fetchWithTimeout(
+        `${this.baseUrl}/replicas`,
+        {
+          method: 'POST',
+          headers: this.getHeaders(),
+          body: JSON.stringify(payload),
+        },
+        30000
+      );
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`Tavus API error: ${response.status} - ${errorData}`);
+      }
+
+      const data = await response.json();
+
+      return {
+        replica_id: data.replica_id || data.id,
+        status: data.status || 'pending',
+        processing_time_estimate: data.processing_time_estimate,
+        message: data.message,
+        training_progress: data.training_progress,
+      };
+    } catch (error) {
+      console.error('Error creating human replica:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get replica status
    * GET /replicas/{replica_id}
    */
@@ -381,8 +447,8 @@ class TavusApiService {
       return {
         replica_id: data.replica_id || data.id,
         status: data.status || 'pending',
-        progress: data.progress,
-        error: data.error,
+        progress: typeof data.progress !== 'undefined' ? data.progress : data.training_progress,
+        error: data.error_message || data.error,
         video_url: data.video_url,
         created_at: data.created_at,
         updated_at: data.updated_at,
@@ -722,7 +788,13 @@ class TavusApiService {
             options.onStatusUpdate(status);
           }
 
-          if (status.status === 'active' || status.status === 'failed') {
+          // Some Tavus replica types use different terminal statuses.
+          if (
+            status.status === 'active' ||
+            status.status === 'failed' ||
+            status.status === 'completed' ||
+            status.status === 'error'
+          ) {
             resolve(status);
             return;
           }

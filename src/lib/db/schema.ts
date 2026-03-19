@@ -17,6 +17,7 @@ export const industryEnum = pgEnum('industry_type', ['car_sales', 'real_estate',
 export const subscriptionTierEnum = pgEnum('subscription_tier', ['free', 'basic', 'pro', 'enterprise']);
 export const subscriptionStatusEnum = pgEnum('subscription_status', ['active', 'inactive', 'cancelled', 'trial']);
 export const cloneStatusEnum = pgEnum('clone_status', ['pending', 'processing', 'active', 'inactive', 'failed']);
+export const replicaStatusEnum = pgEnum('replica_status', ['pending', 'processing', 'active', 'inactive', 'failed']);
 export const integrationTypeEnum = pgEnum('integration_type', ['website', 'widget', 'api', 'webhook']);
 
 // Users Table
@@ -68,6 +69,29 @@ export const clones = pgTable('clones', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// Replicas Table (Personal human replicas trained via Tavus)
+export const replicas = pgTable('replicas', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id).notNull(),
+
+  replicaName: varchar('replica_name', { length: 255 }).notNull(),
+  modelName: varchar('model_name', { length: 50 }).default('phoenix-4'),
+
+  callbackUrl: text('callback_url'),
+  trainVideoUrl: text('train_video_url').notNull(),
+  consentVideoUrl: text('consent_video_url').notNull(),
+
+  tavusReplicaId: varchar('tavus_replica_id', { length: 255 }),
+  status: replicaStatusEnum('status').default('pending'),
+  tavusStatusRaw: text('tavus_status_raw'),
+  trainingProgress: text('training_progress'),
+
+  isActive: boolean('is_active').default(true),
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // Integration Configs Table
 export const integrationConfigs = pgTable('integration_configs', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -107,6 +131,7 @@ export const analytics = pgTable('analytics', {
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   clones: many(clones),
+  replicas: many(replicas),
 }));
 
 export const clonesRelations = relations(clones, ({ one, many }) => ({
@@ -117,6 +142,13 @@ export const clonesRelations = relations(clones, ({ one, many }) => ({
   integrationConfigs: many(integrationConfigs),
   conversations: many(conversations),
   analytics: many(analytics),
+}));
+
+export const replicasRelations = relations(replicas, ({ one }) => ({
+  user: one(users, {
+    fields: [replicas.userId],
+    references: [users.id],
+  }),
 }));
 
 export const integrationConfigsRelations = relations(integrationConfigs, ({ one }) => ({

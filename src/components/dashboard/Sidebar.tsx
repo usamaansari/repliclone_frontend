@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Menu,
   X,
-  Users
+  Users,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { removeAuthToken } from "@/utils/auth";
@@ -55,15 +56,32 @@ export default function Sidebar({ onLogout }: SidebarProps) {
   }, [pathname]);
 
   const menuItems = [
+    /*
     {
       href: "/dashboard",
       label: "Dashboard",
       icon: LayoutDashboard,
     },
+    */
     {
       href: "/dashboard/clones",
       label: "Clones",
       icon: Users,
+    },
+    {
+      href: "/dashboard/replicas",
+      label: "Replicas",
+      icon: MessageSquare,
+    },
+    {
+      href: "/dashboard",
+      label: "Demo Page",
+      icon: Sparkles,
+    },
+    {
+      href: "/dashboard/settings",
+      label: "Settings",
+      icon: Settings,
     },
     /*
     {
@@ -80,11 +98,6 @@ export default function Sidebar({ onLogout }: SidebarProps) {
       href: "/dashboard/profile",
       label: "Profile",
       icon: User,
-    },
-    {
-      href: "/dashboard/settings",
-      label: "Settings",
-      icon: Settings,
     },
     */
   ];

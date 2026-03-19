@@ -592,7 +592,7 @@ export default function AboutPage() {
                   <div className="flex-1">
                     <CardTitle className="text-2xl mb-1">Usama Ansari</CardTitle>
                     <CardDescription className="text-base font-semibold text-primary">
-                      Co-Founder & CTO
+                      Software Developer (Freelancer)
                     </CardDescription>
                   </div>
                 </div>
