@@ -81,7 +81,7 @@ export default function Header() {
             {authenticated ? (
               <>
                 <Button size="sm" variant="outline" asChild>
-                  <Link href="/dashboard">Dashboard</Link>
+                  <Link href="/dashboard/clones">Dashboard</Link>
                 </Button>
                 <Button
                   size="sm"
@@ -144,7 +144,7 @@ export default function Header() {
                 {authenticated ? (
                   <>
                     <Button size="sm" variant="outline" asChild className="w-full justify-start">
-                      <Link href="/dashboard">Dashboard</Link>
+                      <Link href="/dashboard/clones">Dashboard</Link>
                     </Button>
                     <Button
                       size="sm"

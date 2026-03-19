@@ -64,7 +64,7 @@ export default function Login() {
       }
 
       // Redirect to dashboard
-      router.push("/dashboard");
+      router.push("/dashboard/clones");
     } catch (error) {
       console.error("Login error:", error);
       if (axios.isAxiosError(error) && error.response?.data?.message) {
