@@ -1,5 +1,5 @@
-import { Sparkles } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -8,7 +8,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <Sparkles className="h-6 w-6 text-primary" />
+              <Image
+                src="/Logo_ReplicloneAI.png"
+                alt="ReplicloneAI logo"
+                width={100}
+                height={100}
+                className="h-[100px] w-[100px] object-contain"
+              />
               <span className="text-xl font-bold">ReplicloneAI</span>
             </Link>
             <p className="text-sm text-muted-foreground">
@@ -33,28 +39,23 @@ export default function Footer() {
                   Pricing
                 </Link>
               </li>
-              <li>
-                <Link href="#" className="hover:text-foreground transition-colors">
-                  Integrations
-                </Link>
-              </li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="#" className="hover:text-foreground transition-colors">
+                <Link href="/about" className="hover:text-foreground transition-colors">
                   About
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-foreground transition-colors">
+                <Link href="/blog" className="hover:text-foreground transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-foreground transition-colors">
+                <Link href="/careers" className="hover:text-foreground transition-colors">
                   Careers
                 </Link>
               </li>
@@ -69,22 +70,22 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Resources</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="#" className="hover:text-foreground transition-colors">
+                <Link href="/documentation" className="hover:text-foreground transition-colors">
                   Documentation
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-foreground transition-colors">
+                <Link href="/support" className="hover:text-foreground transition-colors">
                   Support
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-foreground transition-colors">
+                <Link href="/community" className="hover:text-foreground transition-colors">
                   Community
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-foreground transition-colors">
+                <Link href="/privacy" className="hover:text-foreground transition-colors">
                   Privacy
                 </Link>
               </li>

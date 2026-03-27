@@ -2,14 +2,12 @@
 
 import React, { useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { 
-  LayoutDashboard, 
   MessageSquare, 
   Settings, 
   LogOut,
-  User,
-  History,
   ChevronLeft,
   ChevronRight,
   Menu,
@@ -152,12 +150,15 @@ export default function Sidebar({ onLogout }: SidebarProps) {
             isCollapsed && !isMobile && "justify-center"
           )}
         >
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-            <LayoutDashboard className="h-5 w-5 text-primary-foreground" />
-          </div>
-          {(!isCollapsed || isMobile) && (
-            <span className="text-lg font-bold whitespace-nowrap">ReplicloneAI</span>
-          )}
+          <Image
+            src="/Logo_ReplicloneAI.png"
+            alt="ReplicloneAI logo"
+            width={32}
+            height={32}
+            className="h-[32px] w-[32px] object-contain shrink-0"
+            priority
+          />
+         
         </Link>
         {!isMobile && (
           <Button
