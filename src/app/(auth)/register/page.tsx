@@ -24,7 +24,8 @@ import {
 import { Input } from "@/components/ui/input";
 import Header from "@/components/Header";
 import Link from "next/link";
-import { Sparkles, Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
 import { setAuthToken } from "@/utils/auth";
 import axios from "axios";
 
@@ -128,7 +129,14 @@ export default function Register() {
             <CardHeader className="space-y-1 text-center">
               <div className="flex justify-center mb-4">
                 <div className="rounded-full bg-primary/10 p-3">
-                  <Sparkles className="h-6 w-6 text-primary" />
+                  <Image
+                    src="/Logo_ReplicloneAI.png"
+                    alt="ReplicloneAI logo"
+                    width={100}
+                    height={100}
+                    className="h-[100px] w-[100px] object-contain"
+                    priority
+                  />
                 </div>
               </div>
               <CardTitle className="text-3xl font-bold">

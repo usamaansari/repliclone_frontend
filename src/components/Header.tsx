@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles, LogOut, Menu, X } from "lucide-react";
+import { LogOut, Menu, X } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { isAuthenticated, removeAuthToken } from "@/utils/auth";
 import axios from "axios";
@@ -58,10 +59,17 @@ export default function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-primary" />
+            <Image
+              src="/Logo_ReplicloneAI.png"
+              alt="ReplicloneAI logo"
+              width={64}
+              height={64}
+              className="h-[64px] w-[64px] object-contain"
+              priority
+            />
             <span className="text-xl font-bold">ReplicloneAI</span>
           </Link>
-          
+        
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-4">
             {navLinks.map((link) => {

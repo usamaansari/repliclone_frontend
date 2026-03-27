@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ReplicloneAI - AI-Powered Virtual Sales Representatives",
   description: "Create AI-powered avatars that act as virtual sales representatives. Deliver tailored pitches, engage customers in real-time, handle objections, and close sales—all with a no-code interface.",
+  icons: {
+    icon: "/Logo_ReplicloneAI.png",
+    shortcut: "/Logo_ReplicloneAI.png",
+    apple: "/Logo_ReplicloneAI.png",
+  },
 };
 
 export default function RootLayout({
