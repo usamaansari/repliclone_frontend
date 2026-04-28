@@ -67,6 +67,13 @@ export interface CreateHumanReplicaPayload {
   model_name?: string; // e.g. "phoenix-4" (default)
 }
 
+export interface CreateImageReplicaPayload {
+  callback_url: string;
+  replica_name: string;
+  train_image_url: string;
+  voice_name: string;
+}
+
 export interface CreateHumanReplicaResponse {
   replica_id: string;
   status: string;
@@ -280,11 +287,14 @@ export interface TavusReplica {
 export interface TavusVoice {
   voice_id: string;
   name: string;
+  voice_name?: string;
   gender?: 'male' | 'female' | 'neutral';
   age_range?: string;
   accent?: string;
   language?: string;
   preview_url?: string;
+  replica_id?: string;
+  tags?: { tag_name: string }[];
 }
 
 export interface TavusAvatar {
@@ -418,6 +428,46 @@ class TavusApiService {
       };
     } catch (error) {
       console.error('Error creating human replica:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create an image-based replica.
+   * POST /replicas
+   */
+  async createImageReplica(payload: CreateImageReplicaPayload): Promise<CreateHumanReplicaResponse> {
+    if (!this.apiKey) {
+      throw new Error('Tavus API key is not configured. Please set NEXT_TAVUS_API_KEY environment variable.');
+    }
+
+    try {
+      const response = await this.fetchWithTimeout(
+        `${this.baseUrl}/replicas`,
+        {
+          method: 'POST',
+          headers: this.getHeaders(),
+          body: JSON.stringify(payload),
+        },
+        30000
+      );
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`Tavus API error: ${response.status} - ${errorData}`);
+      }
+
+      const data = await response.json();
+
+      return {
+        replica_id: data.replica_id || data.id,
+        status: data.status || 'pending',
+        processing_time_estimate: data.processing_time_estimate,
+        message: data.message,
+        training_progress: data.training_progress,
+      };
+    } catch (error) {
+      console.error('Error creating image replica:', error);
       throw error;
     }
   }
@@ -881,14 +931,29 @@ class TavusApiService {
    * List available voices
    * GET /voices
    */
-  async listVoices(): Promise<TavusVoice[]> {
+  async listVoices(params?: {
+    limit?: number;
+    page?: number;
+    sort?: 'asc' | 'desc';
+    search?: string;
+    tag?: string;
+  }): Promise<TavusVoice[]> {
     if (!this.apiKey) {
       throw new Error('Tavus API key is not configured');
     }
 
     try {
+      const queryParams = new URLSearchParams();
+      if (params?.limit) queryParams.append('limit', String(params.limit));
+      if (params?.page) queryParams.append('page', String(params.page));
+      if (params?.sort) queryParams.append('sort', params.sort);
+      if (params?.search) queryParams.append('search', params.search);
+      if (params?.tag) queryParams.append('tag', params.tag);
+
+      const url = `${this.baseUrl}/voices${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+
       const response = await this.fetchWithTimeout(
-        `${this.baseUrl}/voices`,
+        url,
         {
           method: 'GET',
           headers: this.getHeaders(),
@@ -902,16 +967,19 @@ class TavusApiService {
       }
 
       const data = await response.json();
-      const voices = Array.isArray(data) ? data : (data.voices || []);
+      const voices = Array.isArray(data) ? data : data?.data || data?.voices || [];
       
       return voices.map((item: any) => ({
         voice_id: item.voice_id || item.id,
-        name: item.name || item.label,
+        name: item.voice_name || item.name || item.label,
+        voice_name: item.voice_name || item.name || item.label,
         gender: item.gender,
         age_range: item.age_range,
         accent: item.accent,
         language: item.language || 'en',
         preview_url: item.preview_url || item.audio_url,
+        replica_id: item.replica_id,
+        tags: Array.isArray(item.tags) ? item.tags : [],
       }));
     } catch (error) {
       console.error('Error listing voices:', error);
