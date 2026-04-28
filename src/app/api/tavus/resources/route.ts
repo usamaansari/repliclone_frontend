@@ -72,7 +72,20 @@ export async function GET(req: NextRequest) {
 
       if (resourceType === 'all' || resourceType === 'voices') {
         try {
-          results.voices = await tavusApi.listVoices();
+          const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!, 10) : undefined;
+          const page = searchParams.get('page') ? parseInt(searchParams.get('page')!, 10) : undefined;
+          const sortParam = searchParams.get('sort');
+          const sort = sortParam === 'asc' || sortParam === 'desc' ? sortParam : undefined;
+          const search = searchParams.get('search') || undefined;
+          const tag = searchParams.get('tag') || undefined;
+
+          results.voices = await tavusApi.listVoices({
+            limit,
+            page,
+            sort,
+            search,
+            tag,
+          });
         } catch (error) {
           console.error('Error fetching voices:', error);
           // Continue with empty array

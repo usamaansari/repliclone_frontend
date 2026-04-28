@@ -127,12 +127,20 @@ export default function ReplicasPage() {
                   Train your personal human replicas and manage their status
                 </p>
               </div>
-              <Link href="/dashboard/replicas/create">
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create New Replica
-                </Button>
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link href="/dashboard/replicas/create-image">
+                  <Button variant="outline">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Image Replica
+                  </Button>
+                </Link>
+                <Link href="/dashboard/replicas/create">
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Video Replica
+                  </Button>
+                </Link>
+              </div>
             </div>
 
             {/* Filters */}
@@ -178,10 +186,10 @@ export default function ReplicasPage() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Get started by creating your first personal human replica.
                 </p>
-                <Link href="/dashboard/replicas/create">
+                <Link href="/dashboard/replicas/create-image">
                   <Button>
                     <MessageSquareMore className="h-4 w-4 mr-2" />
-                    Create Your First Replica
+                    Create Your First Image Replica
                   </Button>
                 </Link>
               </div>

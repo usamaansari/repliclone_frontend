@@ -36,6 +36,10 @@ export default function ReplicaDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const isImageReplica = replica?.modelName === 'image';
+  const imageVoiceName = isImageReplica
+    ? (replica?.consentVideoUrl || '').replace('voice_name:', '')
+    : '';
 
   const fetchReplica = async () => {
     try {
@@ -194,21 +198,36 @@ export default function ReplicaDetailPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Inputs</CardTitle>
-                  <CardDescription>These are the training and consent video URLs you submitted.</CardDescription>
+                  <CardDescription>
+                    {isImageReplica
+                      ? 'These are the image input details used for training.'
+                      : 'These are the training and consent video URLs you submitted.'}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <div className="text-sm text-muted-foreground">Training video</div>
+                    <div className="text-sm text-muted-foreground">
+                      {isImageReplica ? 'Training image URL' : 'Training video'}
+                    </div>
                     <div className="mt-1 font-mono text-sm break-all">
                       {replica.trainVideoUrl}
                     </div>
                   </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground">Consent video</div>
-                    <div className="mt-1 font-mono text-sm break-all">
-                      {replica.consentVideoUrl}
+                  {isImageReplica ? (
+                    <div>
+                      <div className="text-sm text-muted-foreground">voice_name</div>
+                      <div className="mt-1 font-mono text-sm break-all">
+                        {imageVoiceName || '—'}
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div>
+                      <div className="text-sm text-muted-foreground">Consent video</div>
+                      <div className="mt-1 font-mono text-sm break-all">
+                        {replica.consentVideoUrl}
+                      </div>
+                    </div>
+                  )}
                   {replica.callbackUrl !== undefined && (
                     <div>
                       <div className="text-sm text-muted-foreground">Callback URL</div>
